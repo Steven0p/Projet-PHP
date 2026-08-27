@@ -1,0 +1,76 @@
+:root {
+    --usfah-primary: #1f3a5f;
+    --usfah-primary-dark: #142842;
+}
+
+body {
+    background-color: #f4f6f9;
+}
+
+.app-navbar {
+    background-color: var(--usfah-primary);
+}
+
+.app-layout {
+    display: flex;
+    min-height: calc(100vh - 56px);
+}
+
+.app-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background-color: #ffffff;
+    border-right: 1px solid #e2e6ea;
+    padding: 1rem 0;
+}
+
+.app-sidebar .nav-link {
+    color: #333;
+    padding: 0.6rem 1.25rem;
+    border-left: 3px solid transparent;
+}
+
+.app-sidebar .nav-link:hover {
+    background-color: #f0f3f8;
+}
+
+.app-sidebar .nav-link.active {
+    color: var(--usfah-primary);
+    font-weight: 600;
+    border-left-color: var(--usfah-primary);
+    background-color: #eef2f8;
+}
+
+.app-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--usfah-primary), var(--usfah-primary-dark));
+}
+
+.login-card {
+    max-width: 420px;
+    width: 100%;
+}
+
+.stat-card {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--usfah-primary);
+}
+
+table.table thead {
+    background-color: #eef2f8;
+}
