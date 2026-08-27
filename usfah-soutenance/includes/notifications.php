@@ -20,10 +20,11 @@ function resend_config(): ?array
 /**
  * Envoie un email de notification de soutenance programmée.
  * $defense doit contenir : titre, date, heure, salle, jury (['president' => 'Nom', ...])
+ * $attachment (optionnel) : ['filename' => '...', 'content' => '<octets bruts du PDF>']
  * Retourne true en cas de succès, false sinon (échec silencieux : fonctionnalité bonus,
  * ne doit jamais bloquer la programmation d'une soutenance).
  */
-function send_defense_notification(string $to, string $student_name, array $defense): bool
+function send_defense_notification(string $to, string $student_name, array $defense, ?array $attachment = null): bool
 {
     $config = resend_config();
     if ($config === null) {
@@ -50,12 +51,21 @@ function send_defense_notification(string $to, string $student_name, array $defe
         . '<ul>' . $jury_items . '</ul>'
         . '<p>Cordialement,<br>USFAH — Mémoire &amp; Soutenance Manager</p>';
 
-    $payload = json_encode([
+    $email = [
         'from' => $config['from'],
         'to' => [$to],
         'subject' => 'Soutenance programmée — ' . $defense['titre'],
         'html' => $html,
-    ]);
+    ];
+
+    if ($attachment !== null) {
+        $email['attachments'] = [[
+            'filename' => $attachment['filename'],
+            'content' => base64_encode($attachment['content']),
+        ]];
+    }
+
+    $payload = json_encode($email);
 
     $context = stream_context_create([
         'http' => [

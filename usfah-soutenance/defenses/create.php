@@ -4,6 +4,7 @@ require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/notifications.php';
+require_once __DIR__ . '/../includes/pdf.php';
 require_login();
 
 $errors = [];
@@ -83,16 +84,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $jury_by_id[$row['id']] = $row['first_name'] . ' ' . $row['last_name'];
             }
 
+            $jury_for_email = [
+                'president' => $jury_by_id[$data['president_id']] ?? '',
+                'examinateur' => $jury_by_id[$data['examinateur_id']] ?? '',
+                'rapporteur' => $jury_by_id[$data['rapporteur_id']] ?? '',
+            ];
+
+            $pdf_content = build_defense_sheet_pdf(
+                "Universite Saint-Francois d'Assise d'Haiti (USFAH)",
+                $info['titre'],
+                [
+                    ['heading' => 'Etudiant'],
+                    ['label' => 'Nom', 'value' => $info['first_name'] . ' ' . $info['last_name']],
+                    ['heading' => 'Soutenance'],
+                    ['label' => 'Date', 'value' => format_date($data['date'])],
+                    ['label' => 'Heure', 'value' => substr($data['heure'], 0, 5)],
+                    ['label' => 'Salle', 'value' => $room_name],
+                    ['heading' => 'Composition du jury'],
+                    ['label' => 'President du jury', 'value' => $jury_for_email['president']],
+                    ['label' => 'Examinateur', 'value' => $jury_for_email['examinateur']],
+                    ['label' => 'Rapporteur', 'value' => $jury_for_email['rapporteur']],
+                ]
+            );
+
             $email_sent = send_defense_notification($info['email'], $info['first_name'] . ' ' . $info['last_name'], [
                 'titre' => $info['titre'],
                 'date' => format_date($data['date']),
                 'heure' => substr($data['heure'], 0, 5),
                 'salle' => $room_name,
-                'jury' => [
-                    'president' => $jury_by_id[$data['president_id']] ?? '',
-                    'examinateur' => $jury_by_id[$data['examinateur_id']] ?? '',
-                    'rapporteur' => $jury_by_id[$data['rapporteur_id']] ?? '',
-                ],
+                'jury' => $jury_for_email,
+            ], [
+                'filename' => 'fiche-soutenance.pdf',
+                'content' => $pdf_content,
             ]);
 
             flash('success', 'Soutenance programmée avec succès.' . ($email_sent ? ' Un email de notification a été envoyé à l\'étudiant.' : ''));
