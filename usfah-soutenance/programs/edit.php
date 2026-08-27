@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($data['nom'] === '') $errors[] = 'Le nom est obligatoire.';
     if ($data['faculty_id'] <= 0) $errors[] = 'La faculté est obligatoire.';
+    if (!in_array($data['type'], ['licence', 'diplome', 'maitrise'], true)) $errors[] = 'Type invalide.';
 
     if (empty($errors)) {
         $stmt = $pdo->prepare('UPDATE programs SET nom=?, faculty_id=?, niveau=?, duree=?, type=? WHERE id=?');

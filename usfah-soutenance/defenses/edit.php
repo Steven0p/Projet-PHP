@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['date'] === '') $errors[] = 'La date est obligatoire.';
     if ($data['heure'] === '') $errors[] = 'L\'heure est obligatoire.';
     if ($data['room_id'] <= 0) $errors[] = 'La salle est obligatoire.';
+    if (!in_array($data['statut'], ['programmee', 'reportee', 'realisee', 'annulee'], true)) $errors[] = 'Statut invalide.';
     if ($data['president_id'] <= 0 || $data['examinateur_id'] <= 0 || $data['rapporteur_id'] <= 0) {
         $errors[] = 'Les trois membres du jury sont obligatoires.';
     } elseif (count(array_unique([$data['president_id'], $data['examinateur_id'], $data['rapporteur_id']])) < 3) {

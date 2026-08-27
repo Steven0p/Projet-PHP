@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data['date_validation'] = trim((string) post('date_validation', ''));
 
     if (!in_array($data['decision'], ['admis', 'admis_avec_corrections', 'ajourne'], true)) $errors[] = 'Décision invalide.';
+    if ($data['mention'] !== '' && !in_array($data['mention'], ['passable', 'assez_bien', 'bien', 'tres_bien', 'excellent'], true)) $errors[] = 'Mention invalide.';
     if ($data['note_finale'] !== '' && !is_numeric($data['note_finale'])) $errors[] = 'La note finale doit être un nombre.';
 
     if (empty($errors)) {

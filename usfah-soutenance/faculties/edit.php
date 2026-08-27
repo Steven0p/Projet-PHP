@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($data['nom'] === '') $errors[] = 'Le nom est obligatoire.';
     if ($data['code'] === '') $errors[] = 'Le code est obligatoire.';
+    if (!in_array($data['statut'], ['actif', 'inactif'], true)) $errors[] = 'Statut invalide.';
 
     if (empty($errors)) {
         $stmt = $pdo->prepare('SELECT COUNT(*) FROM faculties WHERE code = ? AND id != ?');

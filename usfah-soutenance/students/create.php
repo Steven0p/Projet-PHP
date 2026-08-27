@@ -25,6 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['last_name'] === '') $errors[] = 'Le nom est obligatoire.';
     if ($data['email'] === '' || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) $errors[] = 'Un email valide est obligatoire.';
     if ($data['annee_academique'] === '') $errors[] = 'L\'année académique est obligatoire.';
+    if ($data['sexe'] !== '' && !in_array($data['sexe'], ['M', 'F'], true)) $errors[] = 'Sexe invalide.';
+    if (!in_array($data['statut'], ['actif', 'inactif'], true)) $errors[] = 'Statut invalide.';
 
     if (empty($errors)) {
         $stmt = $pdo->prepare('SELECT COUNT(*) FROM students WHERE matricule = ?');

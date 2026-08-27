@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($data['thesis_id'] <= 0) $errors[] = 'Le mémoire est obligatoire.';
     if ($data['description'] === '') $errors[] = 'La description est obligatoire.';
+    if (!in_array($data['statut'], ['a_faire', 'en_cours', 'soumise', 'validee'], true)) $errors[] = 'Statut invalide.';
 
     if (empty($errors)) {
         $stmt = $pdo->prepare('INSERT INTO corrections (thesis_id, description, date_limite, statut) VALUES (?, ?, ?, ?)');

@@ -32,6 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['email'] === '' || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) $errors[] = 'Un email valide est obligatoire.';
     if ($password !== '' && strlen($password) < 8) $errors[] = 'Le mot de passe doit contenir au moins 8 caractères.';
     if ($password !== '' && $password !== $password_confirm) $errors[] = 'Les mots de passe ne correspondent pas.';
+    if (!in_array($data['role'], ['admin', 'responsable_academique'], true)) $errors[] = 'Rôle invalide.';
+    if (!in_array($data['statut'], ['actif', 'inactif'], true)) $errors[] = 'Statut invalide.';
     if ($id === (int) $_SESSION['user_id'] && $data['statut'] === 'inactif') $errors[] = 'Vous ne pouvez pas désactiver votre propre compte.';
 
     if (empty($errors)) {

@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($data['nom_numero'] === '') $errors[] = 'Le nom ou numéro de la salle est obligatoire.';
     if ($data['capacite'] !== '' && !ctype_digit((string) $data['capacite'])) $errors[] = 'La capacité doit être un nombre.';
+    if (!in_array($data['disponibilite'], ['disponible', 'indisponible'], true)) $errors[] = 'Disponibilité invalide.';
 
     if (empty($errors)) {
         $stmt = $pdo->prepare('UPDATE rooms SET nom_numero=?, campus=?, capacite=?, disponibilite=?, description=? WHERE id=?');

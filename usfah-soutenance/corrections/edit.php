@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data['date_validation'] = trim((string) post('date_validation', ''));
 
     if ($data['description'] === '') $errors[] = 'La description est obligatoire.';
+    if (!in_array($data['statut'], ['a_faire', 'en_cours', 'soumise', 'validee'], true)) $errors[] = 'Statut invalide.';
 
     if (empty($errors)) {
         $stmt = $pdo->prepare('UPDATE corrections SET description=?, date_limite=?, statut=?, date_validation=? WHERE id=?');

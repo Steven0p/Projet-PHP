@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['student_id'] <= 0) $errors[] = 'L\'étudiant est obligatoire.';
     if ($data['titre'] === '') $errors[] = 'Le titre est obligatoire.';
     if ($data['annee_academique'] === '') $errors[] = 'L\'année académique est obligatoire.';
+    if (!in_array($data['statut'], ['en_preparation', 'soumis', 'valide', 'a_corriger', 'autorise_a_soutenir', 'soutenu'], true)) $errors[] = 'Statut invalide.';
 
     if (empty($errors) && $data['student_id'] > 0) {
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM theses WHERE student_id = ? AND statut != 'soutenu'");
