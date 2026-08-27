@@ -51,11 +51,29 @@ function send_defense_notification(string $to, string $student_name, array $defe
         . '<ul>' . $jury_items . '</ul>'
         . '<p>Cordialement,<br>USFAH — Mémoire &amp; Soutenance Manager</p>';
 
+    $jury_lines = '';
+    foreach ($defense['jury'] as $role => $name) {
+        $label = $role_labels[$role] ?? ucfirst($role);
+        $jury_lines .= "- {$label} : {$name}\n";
+    }
+
+    $text = "Votre soutenance a été programmée\n\n"
+        . "Bonjour {$student_name},\n\n"
+        . "Voici les détails de votre soutenance de mémoire :\n\n"
+        . "Mémoire : {$defense['titre']}\n"
+        . "Date : {$defense['date']}\n"
+        . "Heure : {$defense['heure']}\n"
+        . "Salle : {$defense['salle']}\n\n"
+        . "Composition du jury :\n"
+        . $jury_lines . "\n"
+        . "Cordialement,\nUSFAH — Mémoire & Soutenance Manager\n";
+
     $email = [
         'from' => $config['from'],
         'to' => [$to],
         'subject' => 'Soutenance programmée — ' . $defense['titre'],
         'html' => $html,
+        'text' => $text,
     ];
 
     if ($attachment !== null) {

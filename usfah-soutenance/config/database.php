@@ -4,8 +4,8 @@ define('BASE_URL', '');
 
 $db_host = 'localhost';
 $db_name = 'usfah_soutenance';
-$db_user = 'root';
-$db_pass = '';
+$db_user = 'usfah_app';
+$db_pass = 'UsfahApp2026x';
 $db_charset = 'utf8mb4';
 
 $dsn = "mysql:host={$db_host};dbname={$db_name};charset={$db_charset}";
