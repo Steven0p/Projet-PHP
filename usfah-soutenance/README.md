@@ -34,15 +34,15 @@ Voir [`../SPEC.md`](../SPEC.md) pour la spécification technique complète du pr
 
 3. **Configurer la connexion à la base de données** dans [`config/database.php`](config/database.php) : ajustez `$db_host`, `$db_name`, `$db_user`, `$db_pass` selon votre environnement.
 
-   Par défaut, le fichier est configuré pour un utilisateur dédié `usfah_app` (et non `root`), créé ainsi :
+   Par défaut, le fichier est configuré pour `root` sans mot de passe (valeurs par défaut classiques de XAMPP/WAMP/MAMP). En production ou sur un serveur partagé, préférez un utilisateur dédié avec des droits limités à cette base :
 
    ```sql
-   CREATE USER 'usfah_app'@'localhost' IDENTIFIED BY 'UsfahApp2026x';
+   CREATE USER 'usfah_app'@'localhost' IDENTIFIED BY 'un_mot_de_passe_fort';
    GRANT ALL PRIVILEGES ON usfah_soutenance.* TO 'usfah_app'@'localhost';
    FLUSH PRIVILEGES;
    ```
 
-   Adaptez ces identifiants (et le mot de passe) à votre propre environnement (XAMPP utilise généralement `root` sans mot de passe).
+   ⚠️ Ne committez jamais de vrais identifiants de base de données dans `config/database.php` avant de pousser sur un dépôt public — utilisez toujours des valeurs génériques dans le dépôt.
 
    Si le projet n'est pas servi à la racine du domaine (ex: `http://localhost/usfah-soutenance/`), adaptez aussi la constante `BASE_URL` en haut du même fichier :
 
