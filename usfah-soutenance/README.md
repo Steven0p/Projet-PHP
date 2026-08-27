@@ -129,6 +129,10 @@ Sans domaine vérifié sur Resend, seule l'adresse `onboarding@resend.dev` peut 
 
 Si `config/resend.php` est absent ou que `enabled` vaut `false`, la fonctionnalité est simplement désactivée : la programmation de la soutenance continue de fonctionner normalement, sans email (fonctionnalité bonus, non bloquante).
 
+## Statistiques graphiques (bonus)
+
+La page **Statistiques** (menu latéral) présente 5 graphiques générés avec [Chart.js](https://www.chartjs.org/) (via CDN) à partir des données réelles de la base : mémoires par statut, soutenances par statut, étudiants par faculté, résultats par décision, et soutenances par mois.
+
 ## Export CSV/Excel (bonus)
 
 Chaque module de liste (facultés, programmes, étudiants, encadreurs, mémoires, membres de jury, salles, soutenances, résultats, corrections) propose un bouton **« Export CSV »** qui télécharge l'ensemble des enregistrements correspondant aux filtres actuellement appliqués. Le fichier CSV (délimiteur `;`, encodage UTF-8 avec BOM) s'ouvre directement dans Excel/LibreOffice sans configuration supplémentaire.

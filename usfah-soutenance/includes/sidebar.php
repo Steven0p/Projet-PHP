@@ -6,6 +6,7 @@ function nav_active(string $segment, string $current): string
 }
 $links = [
     'dashboard'     => ['Tableau de bord', 'bi-speedometer2'],
+    'statistiques'  => ['Statistiques', 'bi-bar-chart-line'],
     'students'      => ['Étudiants', 'bi-people'],
     'theses'        => ['Mémoires', 'bi-journal-text'],
     'defenses'      => ['Soutenances', 'bi-calendar-event'],
