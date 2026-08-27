@@ -100,3 +100,23 @@ function status_badge(string $statut): string
     $label = ucwords(str_replace('_', ' ', $statut));
     return '<span class="badge text-bg-' . $color . '">' . e($label) . '</span>';
 }
+
+/**
+ * Exporte des données au format CSV (compatible Excel : BOM UTF-8, délimiteur ;)
+ * et termine le script.
+ */
+function export_csv(string $filename, array $headers, array $rows): void
+{
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Pragma: no-cache');
+
+    $output = fopen('php://output', 'w');
+    fwrite($output, "\xEF\xBB\xBF");
+    fputcsv($output, $headers, ';');
+    foreach ($rows as $row) {
+        fputcsv($output, $row, ';');
+    }
+    fclose($output);
+    exit;
+}

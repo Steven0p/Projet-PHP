@@ -36,7 +36,10 @@ require __DIR__ . '/../includes/header.php';
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3 mb-0">Mémoires</h1>
-    <a href="create.php" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Ajouter un mémoire</a>
+    <div>
+        <a href="export.php?<?= http_build_query(['search' => $search, 'statut' => $statut, 'annee' => $annee]) ?>" class="btn btn-outline-secondary"><i class="bi bi-file-earmark-spreadsheet"></i> Export CSV</a>
+        <a href="create.php" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Ajouter un mémoire</a>
+    </div>
 </div>
 
 <form method="get" class="row g-2 mb-3">

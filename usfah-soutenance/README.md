@@ -129,6 +129,10 @@ Sans domaine vérifié sur Resend, seule l'adresse `onboarding@resend.dev` peut 
 
 Si `config/resend.php` est absent ou que `enabled` vaut `false`, la fonctionnalité est simplement désactivée : la programmation de la soutenance continue de fonctionner normalement, sans email (fonctionnalité bonus, non bloquante).
 
+## Export CSV/Excel (bonus)
+
+Chaque module de liste (facultés, programmes, étudiants, encadreurs, mémoires, membres de jury, salles, soutenances, résultats, corrections) propose un bouton **« Export CSV »** qui télécharge l'ensemble des enregistrements correspondant aux filtres actuellement appliqués. Le fichier CSV (délimiteur `;`, encodage UTF-8 avec BOM) s'ouvre directement dans Excel/LibreOffice sans configuration supplémentaire.
+
 ## Fiche de soutenance en PDF (bonus)
 
 Depuis la page de détail d'une soutenance, le bouton **« Fiche PDF »** génère et télécharge une fiche récapitulative (étudiant, mémoire, date, heure, salle, composition du jury) au format PDF.

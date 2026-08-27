@@ -39,7 +39,10 @@ require __DIR__ . '/../includes/header.php';
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3 mb-0">Étudiants</h1>
-    <a href="create.php" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Ajouter un étudiant</a>
+    <div>
+        <a href="export.php?<?= http_build_query(['matricule' => $matricule, 'nom' => $nom, 'faculty_id' => $faculty_id, 'program_id' => $program_id]) ?>" class="btn btn-outline-secondary"><i class="bi bi-file-earmark-spreadsheet"></i> Export CSV</a>
+        <a href="create.php" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Ajouter un étudiant</a>
+    </div>
 </div>
 
 <form method="get" class="row g-2 mb-3">
