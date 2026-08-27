@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/notifications.php';
 require_login();
 
 $errors = [];
@@ -66,7 +67,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$defense_id, $data['rapporteur_id'], 'rapporteur']);
 
             $pdo->commit();
-            flash('success', 'Soutenance programmée avec succès.');
+
+            $info_stmt = $pdo->prepare('SELECT t.titre, s.email, s.first_name, s.last_name FROM theses t JOIN students s ON s.id = t.student_id WHERE t.id = ?');
+            $info_stmt->execute([$data['thesis_id']]);
+            $info = $info_stmt->fetch();
+
+            $room_stmt = $pdo->prepare('SELECT nom_numero FROM rooms WHERE id = ?');
+            $room_stmt->execute([$data['room_id']]);
+            $room_name = $room_stmt->fetchColumn();
+
+            $jury_stmt = $pdo->prepare('SELECT id, first_name, last_name FROM jury_members WHERE id IN (?, ?, ?)');
+            $jury_stmt->execute([$data['president_id'], $data['examinateur_id'], $data['rapporteur_id']]);
+            $jury_by_id = [];
+            foreach ($jury_stmt->fetchAll() as $row) {
+                $jury_by_id[$row['id']] = $row['first_name'] . ' ' . $row['last_name'];
+            }
+
+            $email_sent = send_defense_notification($info['email'], $info['first_name'] . ' ' . $info['last_name'], [
+                'titre' => $info['titre'],
+                'date' => format_date($data['date']),
+                'heure' => substr($data['heure'], 0, 5),
+                'salle' => $room_name,
+                'jury' => [
+                    'president' => $jury_by_id[$data['president_id']] ?? '',
+                    'examinateur' => $jury_by_id[$data['examinateur_id']] ?? '',
+                    'rapporteur' => $jury_by_id[$data['rapporteur_id']] ?? '',
+                ],
+            ]);
+
+            flash('success', 'Soutenance programmée avec succès.' . ($email_sent ? ' Un email de notification a été envoyé à l\'étudiant.' : ''));
             redirect('/defenses/index.php');
         } catch (PDOException $e) {
             $pdo->rollBack();

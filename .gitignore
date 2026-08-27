@@ -3,3 +3,4 @@
 .env
 vendor/
 node_modules/
+usfah-soutenance/config/resend.php

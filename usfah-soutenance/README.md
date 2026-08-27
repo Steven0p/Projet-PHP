@@ -117,6 +117,18 @@ Chaque module CRUD suit le même patron : `index.php` (liste, recherche, filtres
 - Jeton CSRF sur tous les formulaires de création/modification/suppression
 - Pages protégées par vérification de session (`require_login()`) et de rôle (`require_role()`)
 
+## Notifications par email (bonus — Resend)
+
+Lorsqu'une soutenance est programmée, l'application peut envoyer automatiquement un email à l'étudiant (titre du mémoire, date, heure, salle, composition du jury) via l'API [Resend](https://resend.com).
+
+1. Copiez le fichier modèle : `cp config/resend.example.php config/resend.php`
+2. Renseignez votre clé API Resend et votre adresse d'expédition dans `config/resend.php`.
+3. `config/resend.php` est ignoré par git (`.gitignore`) : ne committez jamais de vraie clé API.
+
+Sans domaine vérifié sur Resend, seule l'adresse `onboarding@resend.dev` peut être utilisée comme expéditeur, et uniquement vers l'adresse email associée à votre propre compte Resend (mode bac à sable). Avec un domaine vérifié, l'envoi fonctionne vers n'importe quel destinataire.
+
+Si `config/resend.php` est absent ou que `enabled` vaut `false`, la fonctionnalité est simplement désactivée : la programmation de la soutenance continue de fonctionner normalement, sans email (fonctionnalité bonus, non bloquante).
+
 ## Compte de démonstration
 
 | Rôle | Email | Mot de passe |
