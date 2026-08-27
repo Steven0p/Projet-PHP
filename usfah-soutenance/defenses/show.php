@@ -38,6 +38,7 @@ require __DIR__ . '/../includes/header.php';
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0">Soutenance — <?= e($defense['titre']) ?></h1>
     <div>
+        <a href="fiche_pdf.php?id=<?= $id ?>" class="btn btn-outline-secondary" target="_blank"><i class="bi bi-file-earmark-pdf"></i> Fiche PDF</a>
         <a href="edit.php?id=<?= $id ?>" class="btn btn-outline-primary">Modifier</a>
         <a href="index.php" class="btn btn-outline-secondary">Retour</a>
     </div>

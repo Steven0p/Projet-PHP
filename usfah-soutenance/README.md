@@ -129,6 +129,12 @@ Sans domaine vérifié sur Resend, seule l'adresse `onboarding@resend.dev` peut 
 
 Si `config/resend.php` est absent ou que `enabled` vaut `false`, la fonctionnalité est simplement désactivée : la programmation de la soutenance continue de fonctionner normalement, sans email (fonctionnalité bonus, non bloquante).
 
+## Fiche de soutenance en PDF (bonus)
+
+Depuis la page de détail d'une soutenance, le bouton **« Fiche PDF »** génère et télécharge une fiche récapitulative (étudiant, mémoire, date, heure, salle, composition du jury) au format PDF.
+
+Le PDF est généré par un petit moteur PHP pur (`includes/pdf.php`, sans bibliothèque externe type FPDF/TCPDF) : suffisant pour un document texte structuré sur une page.
+
 ## Compte de démonstration
 
 | Rôle | Email | Mot de passe |
