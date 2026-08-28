@@ -129,6 +129,10 @@ Sans domaine vérifié sur Resend, seule l'adresse `onboarding@resend.dev` peut 
 
 Si `config/resend.php` est absent ou que `enabled` vaut `false`, la fonctionnalité est simplement désactivée : la programmation de la soutenance continue de fonctionner normalement, sans email (fonctionnalité bonus, non bloquante).
 
+## Procès-verbal de soutenance (bonus)
+
+Depuis la page de détail d'un résultat, le bouton **« Imprimer le PV »** génère un procès-verbal de soutenance en PDF : détails de la soutenance, résultat délibéré (note, mention, décision, commentaires), et une ligne de signature par membre du jury (président, examinateur, rapporteur), prêt à être imprimé et signé.
+
 ## Statistiques graphiques (bonus)
 
 La page **Statistiques** (menu latéral) présente 5 graphiques générés avec [Chart.js](https://www.chartjs.org/) (via CDN) à partir des données réelles de la base : mémoires par statut, soutenances par statut, étudiants par faculté, résultats par décision, et soutenances par mois.
