@@ -5,6 +5,7 @@ require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/audit.php';
 require_once __DIR__ . '/../includes/notifications.php';
+require_once __DIR__ . '/../includes/pdf.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -57,13 +58,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $email_sent = false;
         if ($info) {
+            $pv_pdf = build_result_proces_verbal($pdo, $id);
             $email_sent = send_result_notification($info['email'], $info['first_name'] . ' ' . $info['last_name'], [
                 'titre' => $info['titre'],
                 'decision' => $data['decision'],
                 'note_finale' => $data['note_finale'],
                 'mention' => $data['mention'],
                 'commentaires' => $data['commentaires_jury'],
-            ]);
+            ], $pv_pdf !== null ? ['filename' => 'proces-verbal.pdf', 'content' => $pv_pdf] : null);
         }
 
         log_activity('update', 'result', $id, 'Modification du résultat (décision : ' . $data['decision'] . ') de la soutenance #' . $result['defense_id']);

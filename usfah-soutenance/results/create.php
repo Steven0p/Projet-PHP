@@ -5,6 +5,7 @@ require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/audit.php';
 require_once __DIR__ . '/../includes/notifications.php';
+require_once __DIR__ . '/../includes/pdf.php';
 require_login();
 
 $errors = [];
@@ -47,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['defense_id'], $data['note_finale'] !== '' ? $data['note_finale'] : null, $data['mention'] ?: null,
             $data['decision'], $data['commentaires_jury'] ?: null, $data['date_validation'] ?: null,
         ]);
+        $result_id = (int) $pdo->lastInsertId();
 
         $info_stmt = $pdo->prepare('
             SELECT t.id AS thesis_id, t.titre, s.email, s.first_name, s.last_name
@@ -67,16 +69,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $email_sent = false;
         if ($info) {
+            $pv_pdf = build_result_proces_verbal($pdo, $result_id);
             $email_sent = send_result_notification($info['email'], $info['first_name'] . ' ' . $info['last_name'], [
                 'titre' => $info['titre'],
                 'decision' => $data['decision'],
                 'note_finale' => $data['note_finale'],
                 'mention' => $data['mention'],
                 'commentaires' => $data['commentaires_jury'],
-            ]);
+            ], $pv_pdf !== null ? ['filename' => 'proces-verbal.pdf', 'content' => $pv_pdf] : null);
         }
 
-        log_activity('create', 'result', (int) $pdo->lastInsertId(), 'Enregistrement du résultat (décision : ' . $data['decision'] . ') pour la soutenance #' . $data['defense_id']);
+        log_activity('create', 'result', $result_id, 'Enregistrement du résultat (décision : ' . $data['decision'] . ') pour la soutenance #' . $data['defense_id']);
         flash('success', 'Résultat enregistré avec succès.' . ($email_sent ? ' Un email de notification a été envoyé à l\'étudiant.' : ''));
         redirect('/results/index.php');
     }
