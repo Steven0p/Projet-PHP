@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $errors = [];
@@ -29,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->prepare("UPDATE theses SET statut = 'a_corriger' WHERE id = ?")->execute([$data['thesis_id']]);
         }
 
+        log_activity('create', 'correction', (int) $pdo->lastInsertId(), 'Création d\'une correction pour le mémoire #' . $data['thesis_id']);
         flash('success', 'Correction enregistrée avec succès.');
         redirect('/corrections/index.php');
     }

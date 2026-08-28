@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -19,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $stmt = $pdo->prepare('DELETE FROM theses WHERE id = ?');
         $stmt->execute([$id]);
+        log_activity('delete', 'thesis', $id, 'Suppression du mémoire "' . $thesis['titre'] . '"');
         flash('success', 'Mémoire supprimé.');
     } catch (PDOException $e) {
         flash('danger', 'Impossible de supprimer ce mémoire : une soutenance ou des corrections y sont rattachées.');

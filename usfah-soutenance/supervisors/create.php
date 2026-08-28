@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $errors = [];
@@ -21,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $stmt = $pdo->prepare('INSERT INTO supervisors (first_name, last_name, email, telephone, specialite, institution, grade) VALUES (?, ?, ?, ?, ?, ?, ?)');
         $stmt->execute([$data['first_name'], $data['last_name'], $data['email'], $data['telephone'] ?: null, $data['specialite'] ?: null, $data['institution'] ?: null, $data['grade'] ?: null]);
+        log_activity('create', 'supervisor', (int) $pdo->lastInsertId(), 'Création de l\'encadreur ' . $data['first_name'] . ' ' . $data['last_name']);
         flash('success', 'Encadreur créé avec succès.');
         redirect('/supervisors/index.php');
     }

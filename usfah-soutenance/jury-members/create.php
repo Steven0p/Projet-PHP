@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $errors = [];
@@ -21,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $stmt = $pdo->prepare('INSERT INTO jury_members (first_name, last_name, email, telephone, specialite, institution, fonction) VALUES (?, ?, ?, ?, ?, ?, ?)');
         $stmt->execute([$data['first_name'], $data['last_name'], $data['email'], $data['telephone'] ?: null, $data['specialite'] ?: null, $data['institution'] ?: null, $data['fonction'] ?: null]);
+        log_activity('create', 'jury_member', (int) $pdo->lastInsertId(), 'Création du membre de jury ' . $data['first_name'] . ' ' . $data['last_name']);
         flash('success', 'Membre de jury créé avec succès.');
         redirect('/jury-members/index.php');
     }

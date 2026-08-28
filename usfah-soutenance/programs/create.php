@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $errors = [];
@@ -24,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $stmt = $pdo->prepare('INSERT INTO programs (nom, faculty_id, niveau, duree, type) VALUES (?, ?, ?, ?, ?)');
         $stmt->execute([$data['nom'], $data['faculty_id'], $data['niveau'], $data['duree'], $data['type']]);
+        log_activity('create', 'program', (int) $pdo->lastInsertId(), 'Création du programme ' . $data['nom']);
         flash('success', 'Programme créé avec succès.');
         redirect('/programs/index.php');
     }

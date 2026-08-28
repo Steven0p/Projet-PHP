@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -19,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $stmt = $pdo->prepare('DELETE FROM defenses WHERE id = ?');
         $stmt->execute([$id]);
+        log_activity('delete', 'defense', $id, 'Suppression de la soutenance pour "' . $defense['titre'] . '"');
         flash('success', 'Soutenance supprimée.');
     } catch (PDOException $e) {
         flash('danger', 'Impossible de supprimer cette soutenance : un résultat y est déjà rattaché.');

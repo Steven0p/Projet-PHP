@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -20,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $stmt = $pdo->prepare('DELETE FROM faculties WHERE id = ?');
         $stmt->execute([$id]);
+        log_activity('delete', 'faculty', $id, 'Suppression de la faculté ' . $faculty['nom']);
         flash('success', 'Faculté supprimée.');
     } catch (PDOException $e) {
         flash('danger', 'Impossible de supprimer cette faculté : des programmes ou étudiants y sont rattachés.');

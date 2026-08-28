@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -30,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $stmt = $pdo->prepare('UPDATE supervisors SET first_name=?, last_name=?, email=?, telephone=?, specialite=?, institution=?, grade=? WHERE id=?');
         $stmt->execute([$data['first_name'], $data['last_name'], $data['email'], $data['telephone'] ?: null, $data['specialite'] ?: null, $data['institution'] ?: null, $data['grade'] ?: null, $id]);
+        log_activity('update', 'supervisor', $id, 'Modification de l\'encadreur ' . $data['first_name'] . ' ' . $data['last_name']);
         flash('success', 'Encadreur mis à jour.');
         redirect('/supervisors/index.php');
     }

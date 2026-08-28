@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $errors = [];
@@ -23,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $stmt = $pdo->prepare('INSERT INTO rooms (nom_numero, campus, capacite, disponibilite, description) VALUES (?, ?, ?, ?, ?)');
         $stmt->execute([$data['nom_numero'], $data['campus'] ?: null, $data['capacite'] !== '' ? (int) $data['capacite'] : null, $data['disponibilite'], $data['description'] ?: null]);
+        log_activity('create', 'room', (int) $pdo->lastInsertId(), 'Création de la salle ' . $data['nom_numero']);
         flash('success', 'Salle créée avec succès.');
         redirect('/rooms/index.php');
     }

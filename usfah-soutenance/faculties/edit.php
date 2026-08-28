@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -41,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $stmt = $pdo->prepare('UPDATE faculties SET nom=?, code=?, description=?, responsable=?, statut=? WHERE id=?');
         $stmt->execute([$data['nom'], $data['code'], $data['description'], $data['responsable'], $data['statut'], $id]);
+        log_activity('update', 'faculty', $id, 'Modification de la faculté ' . $data['nom']);
         flash('success', 'Faculté mise à jour.');
         redirect('/faculties/index.php');
     }

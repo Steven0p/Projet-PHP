@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $errors = [];
@@ -42,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['student_id'], $data['titre'], $data['resume'] ?: null, $data['domaine_recherche'] ?: null,
             $data['supervisor_id'] ?: null, $data['date_soumission'] ?: null, $data['annee_academique'], $data['statut'],
         ]);
+        log_activity('create', 'thesis', (int) $pdo->lastInsertId(), 'Création du mémoire "' . $data['titre'] . '"');
         flash('success', 'Mémoire créé avec succès.');
         redirect('/theses/index.php');
     }

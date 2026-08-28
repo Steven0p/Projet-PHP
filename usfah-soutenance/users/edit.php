@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_role(['admin']);
 
 $id = (int) get_param('id', 0);
@@ -50,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare('UPDATE users SET first_name=?, last_name=?, email=?, role=?, statut=? WHERE id=?');
             $stmt->execute([$data['first_name'], $data['last_name'], $data['email'], $data['role'], $data['statut'], $id]);
         }
+        log_activity('update', 'user', $id, 'Modification de l\'utilisateur ' . $data['first_name'] . ' ' . $data['last_name']);
         flash('success', 'Utilisateur mis à jour.');
         redirect('/users/index.php');
     }

@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_role(['admin']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && post('action') === 'toggle_status') {
@@ -11,8 +12,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && post('action') === 'toggle_status')
     if ($id === (int) $_SESSION['user_id']) {
         flash('danger', 'Vous ne pouvez pas désactiver votre propre compte.');
     } else {
+        $target_stmt = $pdo->prepare('SELECT first_name, last_name, statut FROM users WHERE id = ?');
+        $target_stmt->execute([$id]);
+        $target = $target_stmt->fetch();
+
         $stmt = $pdo->prepare("UPDATE users SET statut = IF(statut = 'actif', 'inactif', 'actif') WHERE id = ?");
         $stmt->execute([$id]);
+
+        if ($target) {
+            $new_statut = $target['statut'] === 'actif' ? 'inactif' : 'actif';
+            log_activity('update', 'user', $id, ucfirst($new_statut === 'actif' ? 'activation' : 'désactivation') . ' du compte de ' . $target['first_name'] . ' ' . $target['last_name']);
+        }
+
         flash('success', 'Statut de l\'utilisateur mis à jour.');
     }
     redirect('/users/index.php');

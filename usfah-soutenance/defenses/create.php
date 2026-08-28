@@ -5,6 +5,7 @@ require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/notifications.php';
 require_once __DIR__ . '/../includes/pdf.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $errors = [];
@@ -118,6 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'content' => $pdf_content,
             ]);
 
+            log_activity('create', 'defense', $defense_id, 'Programmation de la soutenance pour "' . $info['titre'] . '"');
             flash('success', 'Soutenance programmée avec succès.' . ($email_sent ? ' Un email de notification a été envoyé à l\'étudiant.' : ''));
             redirect('/defenses/index.php');
         } catch (PDOException $e) {

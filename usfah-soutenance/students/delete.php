@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -19,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $stmt = $pdo->prepare('DELETE FROM students WHERE id = ?');
         $stmt->execute([$id]);
+        log_activity('delete', 'student', $id, 'Suppression de l\'étudiant ' . $student['matricule'] . ' - ' . $student['first_name'] . ' ' . $student['last_name']);
         flash('success', 'Étudiant supprimé.');
     } catch (PDOException $e) {
         flash('danger', 'Impossible de supprimer cet étudiant : un mémoire lui est rattaché.');

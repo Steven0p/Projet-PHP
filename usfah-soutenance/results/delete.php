@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -18,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
     $stmt = $pdo->prepare('DELETE FROM results WHERE id = ?');
     $stmt->execute([$id]);
+    log_activity('delete', 'result', $id, 'Suppression du résultat du mémoire "' . $result['titre'] . '"');
     flash('success', 'Résultat supprimé.');
     redirect('/results/index.php');
 }

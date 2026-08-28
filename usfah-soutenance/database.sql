@@ -11,6 +11,7 @@ USE usfah_soutenance;
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS corrections;
+DROP TABLE IF EXISTS activity_log;
 DROP TABLE IF EXISTS results;
 DROP TABLE IF EXISTS defense_jury;
 DROP TABLE IF EXISTS defenses;
@@ -206,6 +207,21 @@ CREATE TABLE corrections (
     statut           ENUM('a_faire','en_cours','soumise','validee') NOT NULL DEFAULT 'a_faire',
     date_validation  DATE NULL,
     CONSTRAINT fk_corrections_thesis FOREIGN KEY (thesis_id) REFERENCES theses(id)
+) ENGINE=InnoDB;
+
+-- ------------------------------------------------------------
+-- activity_log (journal des activités des administrateurs, bonus)
+-- ------------------------------------------------------------
+CREATE TABLE activity_log (
+    id           INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id      INT UNSIGNED NULL,
+    user_name    VARCHAR(200) NOT NULL,
+    action       ENUM('create','update','delete','login','logout') NOT NULL,
+    entity_type  VARCHAR(50) NOT NULL,
+    entity_id    INT UNSIGNED NULL,
+    description  VARCHAR(255) NOT NULL,
+    created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_activity_log_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 -- ============================================================

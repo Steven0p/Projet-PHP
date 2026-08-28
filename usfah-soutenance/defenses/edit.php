@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -69,6 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$id, $data['rapporteur_id'], 'rapporteur']);
 
             $pdo->commit();
+            $titre_stmt = $pdo->prepare('SELECT titre FROM theses WHERE id = ?');
+            $titre_stmt->execute([$defense['thesis_id']]);
+            log_activity('update', 'defense', $id, 'Modification de la soutenance pour "' . $titre_stmt->fetchColumn() . '"');
             flash('success', 'Soutenance mise à jour.');
             redirect('/defenses/index.php');
         } catch (PDOException $e) {

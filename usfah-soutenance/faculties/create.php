@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $errors = [];
@@ -31,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $stmt = $pdo->prepare('INSERT INTO faculties (nom, code, description, responsable, statut) VALUES (?, ?, ?, ?, ?)');
         $stmt->execute([$data['nom'], $data['code'], $data['description'], $data['responsable'], $data['statut']]);
+        log_activity('create', 'faculty', (int) $pdo->lastInsertId(), 'Création de la faculté ' . $data['nom']);
         flash('success', 'Faculté créée avec succès.');
         redirect('/faculties/index.php');
     }

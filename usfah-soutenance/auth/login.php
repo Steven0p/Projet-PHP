@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 
 if (is_logged_in()) {
     redirect('/dashboard/index.php');
@@ -30,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'Ce compte est désactivé. Contactez un administrateur.';
         } else {
             login_user($user);
+            log_activity('login', 'session', (int) $user['id'], 'Connexion de ' . $user['first_name'] . ' ' . $user['last_name']);
             redirect('/dashboard/index.php');
         }
     }

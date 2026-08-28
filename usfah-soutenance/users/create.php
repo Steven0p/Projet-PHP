@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_role(['admin']);
 
 $errors = [];
@@ -34,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $stmt = $pdo->prepare('INSERT INTO users (first_name, last_name, email, password_hash, role, statut) VALUES (?, ?, ?, ?, ?, ?)');
         $stmt->execute([$data['first_name'], $data['last_name'], $data['email'], password_hash($password, PASSWORD_DEFAULT), $data['role'], $data['statut']]);
+        log_activity('create', 'user', (int) $pdo->lastInsertId(), 'Création de l\'utilisateur ' . $data['first_name'] . ' ' . $data['last_name'] . ' (' . $data['role'] . ')');
         flash('success', 'Utilisateur créé avec succès.');
         redirect('/users/index.php');
     }

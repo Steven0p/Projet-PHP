@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $errors = [];
@@ -55,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        log_activity('create', 'result', (int) $pdo->lastInsertId(), 'Enregistrement du résultat (décision : ' . $data['decision'] . ') pour la soutenance #' . $data['defense_id']);
         flash('success', 'Résultat enregistré avec succès.');
         redirect('/results/index.php');
     }

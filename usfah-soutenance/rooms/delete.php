@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -19,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $stmt = $pdo->prepare('DELETE FROM rooms WHERE id = ?');
         $stmt->execute([$id]);
+        log_activity('delete', 'room', $id, 'Suppression de la salle ' . $room['nom_numero']);
         flash('success', 'Salle supprimée.');
     } catch (PDOException $e) {
         flash('danger', 'Impossible de supprimer cette salle : des soutenances y sont programmées.');

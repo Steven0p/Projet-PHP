@@ -34,6 +34,11 @@ $links = [
                     <i class="bi bi-shield-lock"></i> Utilisateurs
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link<?= nav_active('activity-log', $current) ?>" href="<?= BASE_URL ?>/activity-log/index.php">
+                    <i class="bi bi-clock-history"></i> Journal des activités
+                </a>
+            </li>
         <?php endif; ?>
     </ul>
 </aside>

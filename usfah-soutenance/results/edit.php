@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -45,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        log_activity('update', 'result', $id, 'Modification du résultat (décision : ' . $data['decision'] . ') de la soutenance #' . $result['defense_id']);
         flash('success', 'Résultat mis à jour.');
         redirect('/results/index.php');
     }

@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $id = (int) get_param('id', 0);
@@ -33,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $stmt = $pdo->prepare('UPDATE programs SET nom=?, faculty_id=?, niveau=?, duree=?, type=? WHERE id=?');
         $stmt->execute([$data['nom'], $data['faculty_id'], $data['niveau'], $data['duree'], $data['type'], $id]);
+        log_activity('update', 'program', $id, 'Modification du programme ' . $data['nom']);
         flash('success', 'Programme mis à jour.');
         redirect('/programs/index.php');
     }

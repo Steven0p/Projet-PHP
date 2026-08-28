@@ -3,6 +3,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/audit.php';
 require_login();
 
 $errors = [];
@@ -47,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['faculty_id'] ?: null, $data['program_id'] ?: null, $data['niveau'] ?: null,
             $data['annee_academique'], $data['statut'],
         ]);
+        log_activity('create', 'student', (int) $pdo->lastInsertId(), 'Création de l\'étudiant ' . $data['matricule'] . ' - ' . $data['first_name'] . ' ' . $data['last_name']);
         flash('success', 'Étudiant créé avec succès.');
         redirect('/students/index.php');
     }
