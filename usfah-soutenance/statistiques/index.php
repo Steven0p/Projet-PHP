@@ -91,8 +91,8 @@ const palette = ['#1f3a5f', '#3d6fb4', '#6ea8dc', '#f0ad4e', '#5cb85c', '#d9534f
 new Chart(document.getElementById('chartTheses'), {
     type: 'bar',
     data: {
-        labels: <?= json_encode(array_values($statut_labels)) ?>,
-        datasets: [{ label: 'Mémoires', data: <?= json_encode(array_values($theses_par_statut)) ?>, backgroundColor: palette }],
+        labels: <?= json_js(array_values($statut_labels)) ?>,
+        datasets: [{ label: 'Mémoires', data: <?= json_js(array_values($theses_par_statut)) ?>, backgroundColor: palette }],
     },
     options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } },
 });
@@ -100,8 +100,8 @@ new Chart(document.getElementById('chartTheses'), {
 new Chart(document.getElementById('chartDefenses'), {
     type: 'doughnut',
     data: {
-        labels: <?= json_encode(array_values($defense_statut_labels)) ?>,
-        datasets: [{ data: <?= json_encode(array_values($defenses_par_statut)) ?>, backgroundColor: palette }],
+        labels: <?= json_js(array_values($defense_statut_labels)) ?>,
+        datasets: [{ data: <?= json_js(array_values($defenses_par_statut)) ?>, backgroundColor: palette }],
     },
     options: { responsive: true },
 });
@@ -109,8 +109,8 @@ new Chart(document.getElementById('chartDefenses'), {
 new Chart(document.getElementById('chartFacultes'), {
     type: 'bar',
     data: {
-        labels: <?= json_encode(array_column($etudiants_par_faculte, 'nom')) ?>,
-        datasets: [{ label: 'Étudiants', data: <?= json_encode(array_map('intval', array_column($etudiants_par_faculte, 'total'))) ?>, backgroundColor: '#1f3a5f' }],
+        labels: <?= json_js(array_column($etudiants_par_faculte, 'nom')) ?>,
+        datasets: [{ label: 'Étudiants', data: <?= json_js(array_map('intval', array_column($etudiants_par_faculte, 'total'))) ?>, backgroundColor: '#1f3a5f' }],
     },
     options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { precision: 0 } } } },
 });
@@ -118,8 +118,8 @@ new Chart(document.getElementById('chartFacultes'), {
 new Chart(document.getElementById('chartResultats'), {
     type: 'pie',
     data: {
-        labels: <?= json_encode(array_values($decision_labels)) ?>,
-        datasets: [{ data: <?= json_encode(array_values($resultats_par_decision)) ?>, backgroundColor: ['#5cb85c', '#f0ad4e', '#d9534f'] }],
+        labels: <?= json_js(array_values($decision_labels)) ?>,
+        datasets: [{ data: <?= json_js(array_values($resultats_par_decision)) ?>, backgroundColor: ['#5cb85c', '#f0ad4e', '#d9534f'] }],
     },
     options: { responsive: true },
 });
@@ -127,8 +127,8 @@ new Chart(document.getElementById('chartResultats'), {
 new Chart(document.getElementById('chartMois'), {
     type: 'line',
     data: {
-        labels: <?= json_encode(array_column($soutenances_par_mois, 'mois')) ?>,
-        datasets: [{ label: 'Soutenances', data: <?= json_encode(array_map('intval', array_column($soutenances_par_mois, 'total'))) ?>, borderColor: '#1f3a5f', backgroundColor: 'rgba(31,58,95,0.15)', fill: true, tension: 0.3 }],
+        labels: <?= json_js(array_column($soutenances_par_mois, 'mois')) ?>,
+        datasets: [{ label: 'Soutenances', data: <?= json_js(array_map('intval', array_column($soutenances_par_mois, 'total'))) ?>, borderColor: '#1f3a5f', backgroundColor: 'rgba(31,58,95,0.15)', fill: true, tension: 0.3 }],
     },
     options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } },
 });

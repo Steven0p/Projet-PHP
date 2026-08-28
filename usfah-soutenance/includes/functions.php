@@ -5,6 +5,16 @@ function e(?string $value): string
     return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+/**
+ * Encode une valeur en JSON de façon sûre pour une insertion directe dans un
+ * bloc <script> (échappe <, >, ', ", & pour empêcher toute évasion de contexte
+ * si la valeur contient des données saisies par un utilisateur, ex: un nom de faculté).
+ */
+function json_js($value): string
+{
+    return json_encode($value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+}
+
 function flash(string $type, string $message): void
 {
     $_SESSION['flash'][] = ['type' => $type, 'message' => $message];
