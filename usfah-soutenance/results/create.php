@@ -4,6 +4,7 @@ require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/audit.php';
+require_once __DIR__ . '/../includes/notifications.php';
 require_login();
 
 $errors = [];
@@ -47,20 +48,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['decision'], $data['commentaires_jury'] ?: null, $data['date_validation'] ?: null,
         ]);
 
-        $defense_stmt = $pdo->prepare('SELECT thesis_id FROM defenses WHERE id = ?');
-        $defense_stmt->execute([$data['defense_id']]);
-        $thesis_id = $defense_stmt->fetchColumn();
-        if ($thesis_id) {
+        $info_stmt = $pdo->prepare('
+            SELECT t.id AS thesis_id, t.titre, s.email, s.first_name, s.last_name
+            FROM defenses d JOIN theses t ON t.id = d.thesis_id JOIN students s ON s.id = t.student_id
+            WHERE d.id = ?
+        ');
+        $info_stmt->execute([$data['defense_id']]);
+        $info = $info_stmt->fetch();
+
+        if ($info) {
             $thesis_statut_by_decision = [
                 'admis' => 'soutenu',
                 'admis_avec_corrections' => 'a_corriger',
                 'ajourne' => 'autorise_a_soutenir',
             ];
-            $pdo->prepare('UPDATE theses SET statut = ? WHERE id = ?')->execute([$thesis_statut_by_decision[$data['decision']], $thesis_id]);
+            $pdo->prepare('UPDATE theses SET statut = ? WHERE id = ?')->execute([$thesis_statut_by_decision[$data['decision']], $info['thesis_id']]);
+        }
+
+        $email_sent = false;
+        if ($info) {
+            $email_sent = send_result_notification($info['email'], $info['first_name'] . ' ' . $info['last_name'], [
+                'titre' => $info['titre'],
+                'decision' => $data['decision'],
+                'note_finale' => $data['note_finale'],
+                'mention' => $data['mention'],
+                'commentaires' => $data['commentaires_jury'],
+            ]);
         }
 
         log_activity('create', 'result', (int) $pdo->lastInsertId(), 'Enregistrement du résultat (décision : ' . $data['decision'] . ') pour la soutenance #' . $data['defense_id']);
-        flash('success', 'Résultat enregistré avec succès.');
+        flash('success', 'Résultat enregistré avec succès.' . ($email_sent ? ' Un email de notification a été envoyé à l\'étudiant.' : ''));
         redirect('/results/index.php');
     }
 }

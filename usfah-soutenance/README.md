@@ -119,7 +119,9 @@ Chaque module CRUD suit le même patron : `index.php` (liste, recherche, filtres
 
 ## Notifications par email (bonus — Resend)
 
-Lorsqu'une soutenance est programmée, l'application peut envoyer automatiquement un email à l'étudiant (titre du mémoire, date, heure, salle, composition du jury) via l'API [Resend](https://resend.com).
+L'application envoie automatiquement un email à l'étudiant via l'API [Resend](https://resend.com) dans deux cas :
+- **Soutenance programmée** : titre du mémoire, date, heure, salle, composition du jury (avec la fiche PDF en pièce jointe).
+- **Résultat délibéré** : décision du jury (admis / admis avec corrections / ajourné), note finale, mention et commentaires — envoyé à chaque création ou modification d'un résultat.
 
 1. Copiez le fichier modèle : `cp config/resend.example.php config/resend.php`
 2. Renseignez votre clé API Resend et votre adresse d'expédition dans `config/resend.php`.
