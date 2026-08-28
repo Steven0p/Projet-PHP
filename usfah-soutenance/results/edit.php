@@ -37,13 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['decision'], $data['commentaires_jury'] ?: null, $data['date_validation'] ?: null, $id,
         ]);
 
-        if ($data['decision'] === 'admis') {
-            $defense_stmt = $pdo->prepare('SELECT thesis_id FROM defenses WHERE id = ?');
-            $defense_stmt->execute([$result['defense_id']]);
-            $thesis_id = $defense_stmt->fetchColumn();
-            if ($thesis_id) {
-                $pdo->prepare("UPDATE theses SET statut = 'soutenu' WHERE id = ?")->execute([$thesis_id]);
-            }
+        $defense_stmt = $pdo->prepare('SELECT thesis_id FROM defenses WHERE id = ?');
+        $defense_stmt->execute([$result['defense_id']]);
+        $thesis_id = $defense_stmt->fetchColumn();
+        if ($thesis_id) {
+            $thesis_statut_by_decision = [
+                'admis' => 'soutenu',
+                'admis_avec_corrections' => 'a_corriger',
+                'ajourne' => 'autorise_a_soutenir',
+            ];
+            $pdo->prepare('UPDATE theses SET statut = ? WHERE id = ?')->execute([$thesis_statut_by_decision[$data['decision']], $thesis_id]);
         }
 
         log_activity('update', 'result', $id, 'Modification du résultat (décision : ' . $data['decision'] . ') de la soutenance #' . $result['defense_id']);
